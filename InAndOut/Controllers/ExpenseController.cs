@@ -29,9 +29,70 @@ namespace InAndOut.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Expense obj)
         {
-            _context.Expenses.Add(obj);
+            if(ModelState.IsValid)
+            {
+                _context.Expenses.Add(obj);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            
+            return View(obj);
+        }
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var obj = _context.Expenses.Find(id);
+            if(obj == null)
+            {
+                return NotFound();
+            }
+            return View(obj);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePost(int? id)
+        {
+            var obj = _context.Expenses.Find(id);
+            if(obj == null)
+            {
+                return NotFound();
+            }
+            _context.Expenses.Remove(obj);
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public IActionResult Update(int? id)
+        {
+
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var obj = _context.Expenses.Find(id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            return View(obj);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Update(Expense obj)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Expenses.Update(obj);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(obj);
         }
     }
 }
